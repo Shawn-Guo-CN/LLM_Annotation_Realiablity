@@ -7,10 +7,7 @@ from openai.types import CompletionChoice
 
 
 MODEL = "gpt-3.5-turbo-1106"
-CLIENT = OpenAI(
-  api_key=os.getenv("OPENAI_API_KEY"),
-)
-PREAMBLE = """You are an expert summary rater. Given a TEXT (completed with a SUBREDDIT and a TITLE) and two summaries, SUMMARY1 and SUMMARY2, your role is to help the user to choose the better one between them."""
+PREAMBLE = """You are an expert summary rater. Given a TEXT (completed with a SUBREDDIT and a TITLE) and two summaries, SUMMARY 1 and SUMMARY 2, your role is to help the user to choose the better one between them."""
 
 
 def construct_query_message(post: str, chosen: str, rejected: str):
@@ -38,16 +35,19 @@ def construct_query_message(post: str, chosen: str, rejected: str):
     return msg, ans
 
 
-def get_completions(message: str, n: int = 1):
+def get_completions(message: str, api_key: str, n: int = 1):
     """Get the logprob of the message.
 
     Args:
       message: str, the message to be evaluated
+      api_key: str, the API key
+      n: int, the number of completions to generate
 
     Returns:
       logprob: float, the logprob of the message
     """
-    completion = CLIENT.chat.completions.create(
+    client = OpenAI(api_key=api_key)
+    completion = client.chat.completions.create(
         model=MODEL,
         messages=[
             {"role": "system", "content": PREAMBLE},
@@ -59,7 +59,7 @@ def get_completions(message: str, n: int = 1):
     return completion.choices
 
 
-def annotate_tldr_post(post: Dict[str, str]) -> int:
+def annotate_tldr_post(post: Dict[str, str], api_key: str) -> int:
     """Annotate the post.
 
     Args:
@@ -69,6 +69,7 @@ def annotate_tldr_post(post: Dict[str, str]) -> int:
             'chosen': a string of the chonse summary
             'rejected': a string of the rejected summary
         }
+        api_key: str, the API key
 
     Returns:
         accuracy: int, 1 if the chosen summary is better than the rejected, 0
@@ -85,7 +86,7 @@ def annotate_tldr_post(post: Dict[str, str]) -> int:
     query_msg, ans = construct_query_message(
         post_text, chosen_text, rejected_text
     )
-    completions = get_completions(query_msg, n=1)
+    completions = get_completions(query_msg, api_key, n=1)
     result = completions[0].message.content
 
     try:
