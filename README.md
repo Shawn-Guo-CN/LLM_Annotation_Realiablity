@@ -17,3 +17,9 @@ The project is organized as follows:
 `prompts.py`: the script to configurate the prompts.
 `annotate.py`: the script to annotate the data by AI.
 `utils.py`: the script to provide utility functions.
+
+## Results
+
+Accuracy of `gpt-3.5-turbo-1106` on the first 1,000 samples from the TL;DR dataset:
+ - zero-shot: 58.1%
+ - one-shot:  62.3%
