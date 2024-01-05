@@ -23,3 +23,7 @@ The project is organized as follows:
 Accuracy of `gpt-3.5-turbo-1106` on the first 1,000 samples from the TL;DR dataset:
  - zero-shot: 58.1%
  - one-shot:  62.3%
+
+Accuracy of `gpt-4-0613` on the first 1,000 samples from the TL;DR dataset:
+ - zero-shot: 63%
+ - one-shot: N/A yet
